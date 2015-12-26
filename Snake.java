@@ -7,6 +7,11 @@ import java.util.TreeMap;
 
 import javax.swing.*;
 
+/*
+	No long ago, I saw one of my friend(MacaoZhang) play Python.
+	That's why I had an idea to create a language simple as Python.
+	These words were all typed by me in only one day. So they will be changed soon~
+*/
 public class Snake {
 	static TreeMap<String,Object> obj;
 	static JTextArea jta1;
