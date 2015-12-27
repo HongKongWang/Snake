@@ -54,29 +54,34 @@ public class Snake {
 				jta1.append("I:");
 				if(str.isEmpty()){
 					jta1.append("nothing\n");
-					say();
-				}
-				while(true){
-					try {
-						s =br.readLine();
-					} catch (Exception e1) {}
-					if(s!=null){
-						jta1.append(s+"\n");
-						read(s);
-					}else{
-						break;
+					JScrollBar sb=sp.getVerticalScrollBar();
+					sb.setValue(sb.getMaximum());
+					say="";
+				}else{
+					while(true){
+						try {
+							s =br.readLine();
+						} catch (Exception e1) {}
+						if(s!=null){
+							jta1.append(s+"\n");
+							read(s);
+						}else{
+							break;
+						}
 					}
+					say();
 				}
 			}
 		});
 	}
 	static void say(String str){
-		jta1.append("Snake:"+str+"\n");
-		say();
+		say=say+"      "+str+"\n";
 	}
 	static void say(){
+		jta1.append("Snake:"+say.replaceFirst("      ",""));
 		JScrollBar sb=sp.getVerticalScrollBar();
 		sb.setValue(sb.getMaximum());
+		say="";
 	}
 	static void read(String str){
 		if(!sleep){
@@ -106,6 +111,22 @@ public class Snake {
 						}
 					}catch(Exception e){
 						say("Time No Found!");
+					}
+				}else if(fir[0].equals("ascii")){
+					if(fir[1].startsWith("~")){
+						char[] c=fir[1].replaceFirst("~","").toCharArray();
+						for(int i=0;i<fir[1].length()-1;i++){
+							Integer in=(int) c[i];
+							say(in.toString());
+						}
+					}else if(obj.get(fir[1])!=null){
+						char[] c=((String) obj.get(fir[1])).toCharArray();
+						for(int i=0;i<fir[1].length();i++){
+							Integer in=(int) c[i];
+							say(in.toString());
+						}
+					}else{
+						say("Object No Found!");
 					}
 				}else if(!fir[0].equals(null)){
 					if(fir[1].startsWith("~")){
