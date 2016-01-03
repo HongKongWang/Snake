@@ -47,6 +47,8 @@ public class Snake {
 		JScrollPane sp1=new JScrollPane(jtf2);
 		jp2.add(sp1);
 		jf.add(jp2);
+		jta1.setFont(new Font("DialogInput",0,13));
+		jta1.setForeground(Color.DARK_GRAY);
 		jf.setVisible(true);
 		jta1.setEditable(false);
 		jb3.addActionListener(new ActionListener(){
