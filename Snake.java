@@ -22,6 +22,7 @@ public class Snake {
 		obj=new TreeMap<String, Object>();
 		JFrame jf=new JFrame("Snake");
 		sleep=false;
+		//The code which JFrameMaker made .
 		jf.setDefaultCloseOperation(3);
 		try{UIManager.setLookAndFeel
 		(UIManager.getSystemLookAndFeelClassName());
