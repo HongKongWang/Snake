@@ -180,10 +180,10 @@ static class jtaWriter extends Thread{
 		char[] c=name.toCharArray();
 		if(!((c.length)==0)){
 				for(int i=0;i<c.length;i++){
-					if(!(((int)c[0]>=65&&(int)c[0]<=90)
-							|((int)c[0]>=97&&(int)c[0]<=122)
-							|((int)c[0]>=48&&(int)c[0]<=57)
-							|(int)c[0]==95)){
+					if(!(((int)c[i]>=65&&(int)c[i]<=90)
+							|((int)c[i]>=97&&(int)c[i]<=122)
+							|((int)c[i]>=48&&(int)c[i]<=57)
+							|(int)c[i]==95)){
 						return false;
 					}
 				}
