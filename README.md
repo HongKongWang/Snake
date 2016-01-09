@@ -1,2 +1,2 @@
 # Snake
-A kind of Language which is simple~
+A Computer Language which is simple~
