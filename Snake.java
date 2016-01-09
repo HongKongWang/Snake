@@ -1,8 +1,8 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.TreeMap;
 
 import javax.swing.*;
@@ -10,19 +10,18 @@ import javax.swing.*;
 /*
 	No long ago, I saw one of my friends (MarcoZhang) play Python.
 	That's why I had an idea to create a language as simple as Python.
-	These words were all typed by me in only two days. So they will be changed soon~
+	These words were all typed by me in only thtee days. So they will be changed soon~
 */
 public class Snake {
-	static TreeMap<String,Object> obj;
+	static TreeMap<String,String> obj;
 	static JTextArea jta1;
 	static JButton jb3;
 	static JScrollPane sp;
 	static boolean sleep;
 	public static void main(String[] args) {
-		obj=new TreeMap<String, Object>();
+		obj=new TreeMap<String, String>();
 		JFrame jf=new JFrame("Snake");
 		sleep=false;
-		//The code which JFrameMaker made .
 		jf.setDefaultCloseOperation(3);
 		try{UIManager.setLookAndFeel
 		(UIManager.getSystemLookAndFeelClassName());
@@ -77,7 +76,7 @@ public class Snake {
 			}
 		});
 	}
-}
+	
 static class jtaWriter extends Thread{
 	JTextArea jta;
 	boolean head;
@@ -95,20 +94,25 @@ static class jtaWriter extends Thread{
 		}
 	}
 	public void run(){
-		Snake.jb3.setEnabled(false);
 		for(int I=0;I<str.length;I++){
 			String[] fir=str[I].split("<<");
 			if(fir.length==2){
 				if(fir[0].equals("out")){
 					if(obj.containsKey(fir[1])){
-						say(obj.get(fir[1]).toString());
-					}else if(fir[1].startsWith("~")){
-						say(fir[1].replaceFirst("~",""));
+						say(obj.get(fir[1]));
+					}else if(fir[1].startsWith("'")){
+						if(fir[1].indexOf("'",1)<0){
+							say("Insert \"'\" to complete string!");
+							break;
+						}else{
+							say(fir[1].substring(1,fir[1].indexOf("'",1)));
+						}
 					}else{
 						try {
 							say(new Calculator().calculate(fir[1])+"");
 						} catch (Exception e) {
 							say("Calculate failed!");
+							break;
 						}
 					}
 				}else if(fir[0].equals("sleep")){
@@ -116,28 +120,41 @@ static class jtaWriter extends Thread{
 						if(obj.get(fir[1])!=null){
 							try{
 								i=new Integer((String)obj.get(fir[1]));
-								sleep(i*1000);
+								Snake.jb3.setEnabled(false);
+								sleep(i);
 							} catch (InterruptedException e) {}
 							catch(NumberFormatException e1){
 								say("Calculate failed");
+								break;
+							}finally{
+								Snake.jb3.setEnabled(true);
 							}
 						}else{
 							try {
 								i=new Integer((int) new Calculator().calculate(fir[1])+"");
-								sleep(i*1000);
+								Snake.jb3.setEnabled(false);
+								sleep(i);
 						}catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 						catch (NumberFormatException e) {
 							say("Calculate failed!");
+							break;
+						}finally{
+							Snake.jb3.setEnabled(true);
 						}
 					}
 				}else if(fir[0].equals("ascii")){
-					if(fir[1].startsWith("~")){
-						char[] c=fir[1].replaceFirst("~","").toCharArray();
-						for(int i=0;i<fir[1].length()-1;i++){
-							Integer in=(int) c[i];
-							say(in.toString());
+					if(fir[1].startsWith("'")){
+						if(fir[1].indexOf("'",1)<0){
+							say("Insert \"'\" to complete string!");
+							break;
+						}else{
+							char[] c=fir[1].substring(1,fir[1].indexOf("'",1)).toCharArray();
+							for(int i=0;i<fir[1].length()-2;i++){
+								Integer in=(int) c[i];
+								say(in.toString());
+							}
 						}
 					}else if(obj.get(fir[1])!=null){
 						char[] c=((String) obj.get(fir[1])).toCharArray();
@@ -145,39 +162,38 @@ static class jtaWriter extends Thread{
 							Integer in=(int) c[i];
 							say(in.toString());
 						}
-					}else{
-						say("Object No Found!");
 					}
 				}else if(noo(fir[0])){
-					if(fir[1].startsWith("~")){
-						obj.put(fir[0],fir[1].replaceFirst("~",""));
-						say(fir[1].replaceFirst("~",""));
-					}else if(obj.get(fir[1])!=null){
-						obj.put(fir[0],obj.get(fir[1]));
-						say(""+obj.get(fir[1]));
-					}else{
-						try {
-							say(new Calculator().calculate(fir[1])+"");
-							obj.put(fir[0],new Calculator().calculate(fir[1]));
-						} catch (Exception e) {
-							say("Calculate failed!");
+							if(fir[1].startsWith("'")){
+								if(fir[1].indexOf("'",1)<0){
+									say("Insert \"'\" to complete string!");
+									break;
+								}else{
+									obj.put(fir[0],fir[1].substring(1,fir[1].indexOf("'",1)));
+									say(obj.get(fir[0]));
+								}
+							}else if(obj.containsKey(fir[1])){
+								obj.put(fir[0],obj.get(fir[1]));
+								say(obj.get(fir[0]));
+							}else{
+								try {
+									obj.put(fir[0],new Calculator().calculate(fir[1])+"");
+									say(obj.get(fir[0]));
+								} catch (NumberFormatException e) {
+									say("Calculate failed!");
+									break;
+								}
+							}
 						}
-					}
-				}else{
-					say("Bad Object Name!");
-				}
-			}else{
-				say("Error!");
 			}
 		}
 		head=true;
-		Snake.jb3.setEnabled(true);
 	}
 	void read(String[] str){
 		this.str=str;
 		this.start();
 	}
-	boolean noo(String name){
+	static boolean noo(String name){
 		char[] c=name.toCharArray();
 		if(!((c.length)==0)){
 				for(int i=0;i<c.length;i++){
