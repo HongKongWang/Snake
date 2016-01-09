@@ -80,7 +80,7 @@ public class Calculator {
         }
         return result;
     }
-    private String calculate(String firstValue,String secondValue,char currentOp) {
+    private String calculate(String firstValue,String secondValue,char currentOp) throws NumberFormatException{
         String result  = "";
         switch(currentOp) {
             case '+':
@@ -104,7 +104,7 @@ public class Calculator {
 class ArithHelper {
     private ArithHelper() {
     }
-    public static double add(String v1, String v2) {
+    public static double add(String v1, String v2) throws NumberFormatException{
     	double re=0;
     	double d1=0;
     	double d2=0;
@@ -121,7 +121,7 @@ class ArithHelper {
     	re=d1+d2;
 		return re;
     }
-    public static double sub(String v1, String v2) {
+    public static double sub(String v1, String v2) throws NumberFormatException{
     	double re=0;
     	double d1=0;
     	double d2=0;
@@ -138,7 +138,7 @@ class ArithHelper {
     	re=d1-d2;
 		return re;
     }
-    public static double mul(String v1, String v2) {
+    public static double mul(String v1, String v2) throws NumberFormatException{
     	double re=0;
     	double d1=0;
     	double d2=0;
@@ -155,7 +155,7 @@ class ArithHelper {
     	re=d1*d2;
 		return re;
     }
-    public static double div(String v1, String v2) {
+    public static double div(String v1, String v2) throws NumberFormatException{
     	double re=0;
     	double d1=0;
     	double d2=0;
@@ -172,7 +172,7 @@ class ArithHelper {
     	re=d1/d2;
 		return re;
     }
-    public static double ChengFang(String v1, String v2) {
+    public static double ChengFang(String v1, String v2) throws NumberFormatException{
     	double re=0;
     	double d1=0;
     	double d2=0;
