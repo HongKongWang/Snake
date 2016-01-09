@@ -110,7 +110,7 @@ static class jtaWriter extends Thread{
 					}else{
 						try {
 							say(new Calculator().calculate(fir[1])+"");
-						} catch (Exception e) {
+						} catch (NumberFormatException e) {
 							say("Calculate failed!");
 							break;
 						}
@@ -184,7 +184,13 @@ static class jtaWriter extends Thread{
 									break;
 								}
 							}
+						}else{
+							say("Error!");
+							break;
 						}
+			}else{
+				say("Error!");
+				break;
 			}
 		}
 		head=true;
@@ -209,4 +215,5 @@ static class jtaWriter extends Thread{
 			return false;
 		}
 	}
+}
 }
