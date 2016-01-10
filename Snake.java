@@ -66,7 +66,7 @@ public class Snake {
 						sb.setLength(sb.length()-1);
 						str=sb.toString();
 					}
-					jta1.append(str.replaceAll(";","\n  ")+"\nSnake:");
+					jta1.append(str.replaceAll(";","\n  ")+"\n");
 					jtaWriter jw=new jtaWriter(jta1);
 					jw.read(s);
 					jw=null;
@@ -87,7 +87,7 @@ static class jtaWriter extends Thread{
 	}
 	void say(String str){
 		if(head){
-			jta.append(str+"\n");
+			jta.append("Snake:"+str+"\n");
 			head=false;
 		}else{
 			jta.append("      "+str+"\n");
@@ -122,7 +122,9 @@ static class jtaWriter extends Thread{
 								i=new Integer((String)obj.get(fir[1]));
 								Snake.jb3.setEnabled(false);
 								sleep(i);
-							} catch (InterruptedException e) {}
+							} catch (InterruptedException e) {
+								continue;
+							}
 							catch(NumberFormatException e1){
 								say("Calculate failed");
 								break;
@@ -135,7 +137,7 @@ static class jtaWriter extends Thread{
 								Snake.jb3.setEnabled(false);
 								sleep(i);
 						}catch (InterruptedException e) {
-							e.printStackTrace();
+							continue;
 						}
 						catch (NumberFormatException e) {
 							say("Calculate failed!");
