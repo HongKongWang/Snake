@@ -10,7 +10,7 @@ import javax.swing.*;
 /*
 	No long ago, I saw one of my friends (MarcoZhang) play Python.
 	That's why I had an idea to create a language as simple as Python.
-	These words were all typed by me in only thtee days. So they will be changed soon~
+	These words were all typed by me in only four days. So they will be changed soon~
 */
 public class Snake {
 	static TreeMap<String,String> obj;
@@ -78,13 +78,13 @@ public class Snake {
 		});
 		jtf2.addKeyListener(new KeyListener(){
 	    	public void keyTyped(KeyEvent e){
-	    		if(e.getKeyChar()==''&&jw!=null){
+	    		if(e.getKeyChar()==27&&jw!=null){//'27' is Esc
 	    			jw.kill();
 	    			jw=null;
 	    		}
 	    	}
 	    	public void keyPressed(KeyEvent e){}
-			public void keyReleased(KeyEvent e){}
+		public void keyReleased(KeyEvent e){}
 		});
 	}
 	
