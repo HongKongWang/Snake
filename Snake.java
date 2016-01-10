@@ -78,7 +78,7 @@ public class Snake {
 		});
 		jtf2.addKeyListener(new KeyListener(){
 	    	public void keyTyped(KeyEvent e){
-	    		if(e.getKeyChar()==27&&jw!=null){//'27' is Esc
+	    		if(e.getKeyChar()==27&&jw!=null){//'27' means 'Esc'
 	    			jw.kill();
 	    			jw=null;
 	    		}
@@ -92,7 +92,7 @@ static class jtaWriter extends Thread{
 	JTextArea jta;
 	boolean head,alive;
 	String[] str;
-	jtaWriter(JTextArea jta){
+	jtaWriter(JTextArea jta){//boolean 'alive' shows that if jtaWriter is working
 		this.jta=jta;
 		this.head=true;
 		this.alive=false;
@@ -233,7 +233,7 @@ static class jtaWriter extends Thread{
 		this.str=str;
 		this.start();
 	}
-	static boolean noo(String name){
+	static boolean noo(String name){//method noo(String) checks that if the name of a value is OK
 		char[] c=name.toCharArray();
 		if(!((c.length)==0)){
 				for(int i=0;i<c.length;i++){
