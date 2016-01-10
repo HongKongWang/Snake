@@ -18,6 +18,7 @@ public class Snake {
 	static JButton jb3;
 	static JScrollPane sp;
 	static boolean sleep;
+	static jtaWriter jw;
 	public static void main(String[] args) {
 		obj=new TreeMap<String, String>();
 		JFrame jf=new JFrame("Snake");
@@ -67,23 +68,34 @@ public class Snake {
 						str=sb.toString();
 					}
 					jta1.append(str.replaceAll(";","\n  ")+"\n");
-					jtaWriter jw=new jtaWriter(jta1);
-					jw.read(s);
 					jw=null;
+					jw=new jtaWriter(jta1);
+					jw.read(s);
 					JScrollBar sb=sp.getVerticalScrollBar();
 					sb.setValue(sb.getMaximum());
 				}
 			}
 		});
+		jtf2.addKeyListener(new KeyListener(){
+	    	public void keyTyped(KeyEvent e){
+	    		if(e.getKeyChar()==''&&jw!=null){
+	    			jw.kill();
+	    			jw=null;
+	    		}
+	    	}
+	    	public void keyPressed(KeyEvent e){}
+			public void keyReleased(KeyEvent e){}
+		});
 	}
 	
 static class jtaWriter extends Thread{
 	JTextArea jta;
-	boolean head;
+	boolean head,alive;
 	String[] str;
 	jtaWriter(JTextArea jta){
 		this.jta=jta;
 		this.head=true;
+		this.alive=false;
 	}
 	void say(String str){
 		if(head){
@@ -93,10 +105,29 @@ static class jtaWriter extends Thread{
 			jta.append("      "+str+"\n");
 		}
 	}
+	void kill(){
+		if(!this.isInterrupted()){
+			this.interrupt();
+		}
+		this.alive=false;
+		say("Stopped!");
+	}
 	public void run(){
+		this.alive=true;
 		for(int I=0;I<str.length;I++){
+			if(!alive){
+				break;
+			}
 			String[] fir=str[I].split("<<");
-			if(fir.length==2){
+			if(fir.length>1&&fir[0].equals("if")){
+				/*if<<1<a:
+				 * 		out<<a;
+				 * 		b<<a;
+				 * 		out<<b+a;
+				 * */
+				//if<<1<a:		out<<a;		b<<a;	out<<b+a;
+				
+			}else if(fir.length==2){
 				if(fir[0].equals("out")){
 					if(obj.containsKey(fir[1])){
 						say(obj.get(fir[1]));
@@ -123,7 +154,7 @@ static class jtaWriter extends Thread{
 								Snake.jb3.setEnabled(false);
 								sleep(i);
 							} catch (InterruptedException e) {
-								continue;
+								break;
 							}
 							catch(NumberFormatException e1){
 								say("Calculate failed");
@@ -137,7 +168,7 @@ static class jtaWriter extends Thread{
 								Snake.jb3.setEnabled(false);
 								sleep(i);
 						}catch (InterruptedException e) {
-							continue;
+							break;
 						}
 						catch (NumberFormatException e) {
 							say("Calculate failed!");
@@ -195,6 +226,7 @@ static class jtaWriter extends Thread{
 				break;
 			}
 		}
+		alive=false;
 		head=true;
 	}
 	void read(String[] str){
