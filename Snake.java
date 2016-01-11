@@ -23,6 +23,7 @@ public class Snake {
 		obj=new TreeMap<String, String>();
 		JFrame jf=new JFrame("Snake");
 		sleep=false;
+		//Layout made by JFrameMaker
 		jf.setDefaultCloseOperation(3);
 		try{UIManager.setLookAndFeel
 		(UIManager.getSystemLookAndFeelClassName());
@@ -126,7 +127,7 @@ static class jtaWriter extends Thread{
 				 * 		out<<b+a;
 				 * */
 				//if<<1<a:		out<<a;		b<<a;	out<<b+a;
-				
+				//Build a Block
 			}else if(fir.length==2){
 				if(fir[0].equals("out")){
 					if(obj.containsKey(fir[1])){
@@ -233,7 +234,8 @@ static class jtaWriter extends Thread{
 		this.str=str;
 		this.start();
 	}
-	static boolean noo(String name){//method noo(String) checks that if the name of a value is OK
+	static boolean noo(String name){
+		//method noo(String) checks that if the name of a value is OK
 		char[] c=name.toCharArray();
 		if(!((c.length)==0)){
 				for(int i=0;i<c.length;i++){
