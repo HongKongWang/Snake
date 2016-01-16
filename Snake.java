@@ -3,15 +3,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.TreeMap;
 
 import javax.swing.*;
 
-/*
-	No long ago, I saw one of my friends (MarcoZhang) play Python.
-	That's why I had an idea to create a language as simple as Python.
-	These words were all typed by me in only four days. So they will be changed soon~
-*/
 public class Snake {
 	static TreeMap<String,String> obj;
 	static JTextArea jta1;
@@ -23,7 +20,6 @@ public class Snake {
 		obj=new TreeMap<String, String>();
 		JFrame jf=new JFrame("Snake");
 		sleep=false;
-		//Layout made by JFrameMaker
 		jf.setDefaultCloseOperation(3);
 		try{UIManager.setLookAndFeel
 		(UIManager.getSystemLookAndFeelClassName());
@@ -31,7 +27,7 @@ public class Snake {
 		jf.setLayout(null);
 		jf.setResizable(false);
 		jf.setBounds(350,74,517,609);
-		jta1=new JTextArea("Snake waked up......\n");
+		jta1=new JTextArea("Snake waked up......");
 		jb3=new JButton("Bite");
 		jf.add(jb3);
 		jb3.setBounds(33,397,442,30);
@@ -57,21 +53,20 @@ public class Snake {
 			public void actionPerformed(ActionEvent e){
 				String str=jtf2.getText();
 				jtf2.setText(null);
-				jta1.append("I:");
+				jta1.append("\nI:");
 				str=str.replaceAll("\n","");
-				String[] s=str.split(";");
-				if(s[0].equals("")){
-					jta1.append("nothing\n");
+				if(str.isEmpty()){
+					jta1.append("nothing");
 				}else{
 					if(str.endsWith(";")){
 						StringBuffer sb=new StringBuffer(str);
 						sb.setLength(sb.length()-1);
 						str=sb.toString();
 					}
-					jta1.append(str.replaceAll(";","\n  ")+"\n");
+					jta1.append(str.replaceAll(";","\n  "));
 					jw=null;
 					jw=new jtaWriter(jta1);
-					jw.read(s);
+					jw.read(str);
 					JScrollBar sb=sp.getVerticalScrollBar();
 					sb.setValue(sb.getMaximum());
 				}
@@ -79,85 +74,98 @@ public class Snake {
 		});
 		jtf2.addKeyListener(new KeyListener(){
 	    	public void keyTyped(KeyEvent e){
-	    		if(e.getKeyChar()==27&&jw!=null){//'27' means 'Esc'
+	    		if(e.getKeyChar()==27&&jw!=null&&jw.alive){
 	    			jw.kill();
 	    			jw=null;
 	    		}
 	    	}
 	    	public void keyPressed(KeyEvent e){}
-		public void keyReleased(KeyEvent e){}
+			public void keyReleased(KeyEvent e){}
 		});
 	}
 	
 static class jtaWriter extends Thread{
 	JTextArea jta;
 	boolean head,alive;
-	String[] str;
-	jtaWriter(JTextArea jta){//boolean 'alive' shows that if jtaWriter is working
+	String str;
+	jtaWriter(JTextArea jta){
 		this.jta=jta;
 		this.head=true;
 		this.alive=false;
 	}
-	void say(String str){
+	private void say(String str){
 		if(head){
-			jta.append("Snake:"+str+"\n");
+			jta.append("\nSnake:"+str);
 			head=false;
 		}else{
-			jta.append("      "+str+"\n");
+			jta.append("\n      "+str);
 		}
 	}
-	void kill(){
+	private void out(String str){
+		str=str.replace("\\n","\n      ");
+		if(head){
+			jta.append("\nSnake:"+str);
+			head=false;
+		}else{
+			jta.append(str);
+		}
+	}
+	public void kill(){
 		if(!this.isInterrupted()){
 			this.interrupt();
 		}
 		this.alive=false;
 		say("Stopped!");
 	}
+	public static String[] split(String str,String spl){
+		String[] s=str.split(spl);
+		String[] S=s;
+		for(int i=0;i<s.length-1;i++){
+			if(s[i].endsWith("\\")){
+				s[i]=s[i].replace("\\","")+spl;
+				for(int j=i;j<s.length-1;j++){
+					s[j]=s[j]+s[j+1];
+				}
+				S=new String[s.length-1];
+				for(int i1=0;i1<S.length;i1++){
+					S[i1]=s[i1];
+				}
+				s=S;
+			}
+		}
+		return S;
+	}
 	public void run(){
 		this.alive=true;
-		for(int I=0;I<str.length;I++){
+		String[] s=split(str, ";");
+		for(int I=0;I<s.length;I++){
 			if(!alive){
 				break;
 			}
-			String[] fir=str[I].split("<<");
-			if(fir.length>1&&fir[0].equals("if")){
-				/*if<<1<a:
-				 * 		out<<a;
-				 * 		b<<a;
-				 * 		out<<b+a;
-				 * */
-				//if<<1<a:		out<<a;		b<<a;	out<<b+a;
-				//Build a Block
-			}else if(fir.length==2){
+			String[] fir=split(s[I],"<<");
+			if(fir.length==2){
 				if(fir[0].equals("out")){
 					if(obj.containsKey(fir[1])){
-						say(obj.get(fir[1]));
-					}else if(fir[1].startsWith("'")){
-						if(fir[1].indexOf("'",1)<0){
-							say("Insert \"'\" to complete string!");
-							break;
-						}else{
-							say(fir[1].substring(1,fir[1].indexOf("'",1)));
-						}
+						out(obj.get(fir[1]));
 					}else{
 						try {
-							say(new Calculator().calculate(fir[1])+"");
-						} catch (NumberFormatException e) {
+							out(new Calculator().calculate(fir[1]));
+						} catch (Exception e) {
 							say("Calculate failed!");
 							break;
 						}
 					}
 				}else if(fir[0].equals("sleep")){
 					Integer i=0;
-						if(obj.get(fir[1])!=null){
+						if(obj.containsKey(fir[1])){
 							try{
-								i=new Integer((String)obj.get(fir[1]));
+								i=new Double((String)obj.get(fir[1])).intValue();
 								Snake.jb3.setEnabled(false);
 								sleep(i);
 							} catch (InterruptedException e) {
 								break;
 							}
-							catch(NumberFormatException e1){
+							catch(Exception e1){
 								say("Calculate failed");
 								break;
 							}finally{
@@ -165,7 +173,7 @@ static class jtaWriter extends Thread{
 							}
 						}else{
 							try {
-								i=new Integer((int) new Calculator().calculate(fir[1])+"");
+								i=new Double(new Calculator().calculate(fir[1])).intValue();
 								Snake.jb3.setEnabled(false);
 								sleep(i);
 						}catch (InterruptedException e) {
@@ -179,49 +187,39 @@ static class jtaWriter extends Thread{
 						}
 					}
 				}else if(fir[0].equals("ascii")){
-					if(fir[1].startsWith("'")){
-						if(fir[1].indexOf("'",1)<0){
-							say("Insert \"'\" to complete string!");
-							break;
-						}else{
-							char[] c=fir[1].substring(1,fir[1].indexOf("'",1)).toCharArray();
-							for(int i=0;i<fir[1].length()-2;i++){
-								Integer in=(int) c[i];
-								say(in.toString());
-							}
-						}
-					}else if(obj.get(fir[1])!=null){
+					if(obj.containsKey(fir[1])){
 						char[] c=((String) obj.get(fir[1])).toCharArray();
 						for(int i=0;i<((String) obj.get(fir[1])).length();i++){
 							Integer in=(int) c[i];
 							say(in.toString());
 						}
-					}
-				}else if(noo(fir[0])){
-							if(fir[1].startsWith("'")){
-								if(fir[1].indexOf("'",1)<0){
-									say("Insert \"'\" to complete string!");
-									break;
-								}else{
-									obj.put(fir[0],fir[1].substring(1,fir[1].indexOf("'",1)));
-									say(obj.get(fir[0]));
-								}
-							}else if(obj.containsKey(fir[1])){
-								obj.put(fir[0],obj.get(fir[1]));
-								say(obj.get(fir[0]));
-							}else{
-								try {
-									obj.put(fir[0],new Calculator().calculate(fir[1])+"");
-									say(obj.get(fir[0]));
-								} catch (NumberFormatException e) {
-									say("Calculate failed!");
-									break;
-								}
+					}else{
+						try{
+							char[] c=new Calculator().calculate(fir[1]).toCharArray();
+							for(int i=0;i<c.length;i++){
+								Integer in=(int) c[i];
+								say(in.toString());
 							}
-						}else{
-							say("Error!");
+						}catch(NumberFormatException e){
+							say("Calculate failed!");
 							break;
 						}
+					}
+				}else if(noo(fir[0])){
+					if(obj.containsKey(fir[1])){
+						obj.put(fir[0],obj.get(fir[1]));
+					}else{
+						try {
+							obj.put(fir[0],new Calculator().calculate(fir[1]));
+						} catch (NumberFormatException e) {
+							say("Calculate failed!");
+							break;
+						}
+					}
+				}else{
+					say("Error!");
+					break;
+				}
 			}else{
 				say("Error!");
 				break;
@@ -230,12 +228,11 @@ static class jtaWriter extends Thread{
 		alive=false;
 		head=true;
 	}
-	void read(String[] str){
+	public void read(String str){
 		this.str=str;
 		this.start();
 	}
-	static boolean noo(String name){
-		//method noo(String) checks that if the name of a value is OK
+	private static boolean noo(String name){
 		char[] c=name.toCharArray();
 		if(!((c.length)==0)){
 				for(int i=0;i<c.length;i++){
